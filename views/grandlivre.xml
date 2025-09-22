@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ==================================================== -->
+    <!-- VUES GRAND LIVRE -->
+    <!-- ==================================================== -->
+    <record id="view_general_ledger_list" model="ir.ui.view">
+        <field name="name">account.general.ledger.custom.list</field>
+        <field name="model">account.general.ledger.custom</field>
+        <field name="arch" type="xml">
+            <list string="Grand Livre" create="false" edit="false" delete="false">
+                <field name="date"/>
+                <field name="journal_id"/>
+                <field name="move_id"/>
+                <field name="account_id"/>
+                <field name="debit" sum="Total Débit"/>
+                <field name="credit" sum="Total Crédit"/>
+                <field name="final_balance" sum="Total Solde"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_general_ledger_form" model="ir.ui.view">
+        <field name="name">account.general.ledger.custom.form</field>
+        <field name="model">account.general.ledger.custom</field>
+        <field name="arch" type="xml">
+            <form string="Détail Grand Livre">
+                <sheet>
+                    <group>
+                        <field name="date"/>
+                        <field name="journal_id"/>
+                        <field name="move_id"/>
+                        <field name="account_id"/>
+                        <field name="debit"/>
+                        <field name="credit"/>
+                        <field name="final_balance"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_general_ledger_search" model="ir.ui.view">
+        <field name="name">account.general.ledger.custom.search</field>
+        <field name="model">account.general.ledger.custom</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Grand Livre">
+                <field name="account_id"/>
+                <field name="journal_id"/>
+                <field name="move_id"/>
+                <filter name="this_month" string="Ce mois" domain="[('date','&gt;=',context_today().replace(day=1))]"/>
+                <filter name="this_year" string="Cette année" domain="[('date','&gt;=',datetime.date(context_today().year,1,1))]"/>
+                <separator/>
+                <group expand="0" string="Regroupements">
+                    <filter name="group_account" string="Par compte" context="{'group_by':'account_id'}"/>
+                    <filter name="group_journal" string="Par journal" context="{'group_by':'journal_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_general_ledger" model="ir.actions.act_window">
+        <field name="name">Grand Livre</field>
+        <field name="res_model">account.general.ledger.custom</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_general_ledger_search"/>
+    </record>
+
+    <!-- ==================================================== -->
+    <!-- VUES BALANCE GÉNÉRALE -->
+    <!-- ==================================================== -->
+    <record id="view_trial_balance_list" model="ir.ui.view">
+        <field name="name">account.trial.balance.custom.list</field>
+        <field name="model">account.trial.balance.custom</field>
+        <field name="arch" type="xml">
+            <list string="Balance Générale" create="false" edit="false" delete="false">
+                <field name="account_id"/>
+                <field name="initial_balance" sum="Total Initial"/>
+                <field name="debit" sum="Total Débit"/>
+                <field name="credit" sum="Total Crédit"/>
+                <field name="final_balance" sum="Total Final"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_trial_balance_form" model="ir.ui.view">
+        <field name="name">account.trial.balance.custom.form</field>
+        <field name="model">account.trial.balance.custom</field>
+        <field name="arch" type="xml">
+            <form string="Détail Balance">
+                <sheet>
+                    <group>
+                        <field name="account_id"/>
+                        <field name="initial_balance"/>
+                        <field name="debit"/>
+                        <field name="credit"/>
+                        <field name="final_balance"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_trial_balance_search" model="ir.ui.view">
+        <field name="name">account.trial.balance.custom.search</field>
+        <field name="model">account.trial.balance.custom</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Balance">
+                <field name="account_id"/>
+                <filter name="this_month" string="Ce mois" domain="[('date','&gt;=',context_today().replace(day=1))]"/>
+                <filter name="this_year" string="Cette année" domain="[('date','&gt;=',datetime.date(context_today().year,1,1))]"/>
+                <separator/>
+                <group expand="0" string="Regroupements">
+                    <filter name="group_account" string="Par compte" context="{'group_by':'account_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_trial_balance" model="ir.actions.act_window">
+        <field name="name">Balance Générale</field>
+        <field name="res_model">account.trial.balance.custom</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_trial_balance_search"/>
+    </record>
+
+    <!-- ==================================================== -->
+    <!-- MENUS -->
+    <!-- ==================================================== -->
+    <menuitem id="menu_accounting_reports_root"
+              name="Rapports Comptables"
+              sequence="10"/>
+
+    <menuitem id="menu_account_general_ledger_custom"
+              name="Grand Livre"
+              parent="menu_accounting_reports_root"
+              action="action_general_ledger"
+              sequence="1"/>
+
+    <menuitem id="menu_account_trial_balance_custom"
+              name="Balance Générale"
+              parent="menu_accounting_reports_root"
+              action="action_trial_balance"
+              sequence="2"/>
+</odoo>
